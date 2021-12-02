@@ -9,10 +9,10 @@
   (define (loop lines prev inc-count)
     (if (and (list? lines) (not (empty? lines)))
         (let ([num (car lines)])
-          (cond
-            ((< prev num) (loop (cdr lines) num (add1 inc-count)))
-            ((>= prev num) (loop (cdr lines) num inc-count))
-            (else (loop (cdr lines) num inc-count))))
+          (if
+           (< prev num)
+           (loop (cdr lines) num (add1 inc-count))
+           (loop (cdr lines) num inc-count)))
         inc-count))
   (loop (cdr lines) (car lines) 0))
 
