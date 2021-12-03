@@ -5,6 +5,19 @@
 (define input (file->lines "input.txt"))
 (define greater (/ (length input) 2))
 
+(define test '("00100"
+               "11110"
+               "10110"
+               "10111"
+               "10101"
+               "01111"
+               "00111"
+               "11100"
+               "10000"
+               "11001"
+               "00010"
+               "01010"))
+
 ;; (define (count-bits lines which-bit)
 ;;   (for*/fold ([ones 0])
 ;;              ([line lines]))
@@ -35,11 +48,39 @@
 (define (convert list-char)
   (binary->decimal (string->number (list->string list-char))))
 
-(define (solve gamma)
+(define (solve-one gamma)
   (let* ([epsilon (convert (flip-bit-char gamma))]
          [gamma-dec (convert gamma)])
     (* gamma-dec epsilon)))
 
-(~> input transpose-bits
-    (construct-gamma greater)
-    (solve))
+(define part-one
+  (~> input transpose-bits
+      (construct-gamma greater)
+      (solve-one)))
+
+
+(define (filter-bits lines char pos)
+  (filter (λ (x) (char=? char (list-ref x pos))) lines))
+
+(define (grab-char val pivot char)
+  (cond
+    [(and (char=? char #\1)(<= pivot val)) #\1]
+    [(and (char=? char #\1)(> pivot val)) #\0]
+    [(<= pivot val) #\0]
+    [(> pivot val) #\1]))
+
+(define (find-rating input oxygen-rating?)
+  (define (loop input pos)
+    (if (= 1 (length input))
+        (car input)
+        (let* ([most-common (count-ones (list-ref (apply map list input) pos))]
+               [char (grab-char most-common (- (length input) most-common ) oxygen-rating?)]
+               [next (filter-bits input char pos)])
+          (loop next (add1 pos)))))
+  (loop input 0))
+
+(define (solve-two input)
+  (let* ([chars (map string->list input)]
+         [oxygen (find-rating chars #\1)]
+         [co2 (find-rating chars #\0)])
+    (* (convert oxygen) (convert co2))))
