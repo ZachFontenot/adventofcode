@@ -7,6 +7,7 @@
 
 (define input (file->lines "input.txt"))
 
+; Feel like megaparsack is overkill, but I assume it'll be useful for later days
 (define direction-and-val/p
   (do [command <- (many/p letter/p)]
       space/p
@@ -21,7 +22,7 @@
         (* hoz depth)
         (let* ([line (car input)]
                [result (parse-result! (parse-string direction-and-val/p line))]
-               [direction (apply string (car result))]
+               [direction (list->string (car result))]
                [val (cadr result)])
           (matcher input direction val hoz aim depth loop))))
     (loop input 0 0 0))
@@ -37,3 +38,19 @@
     ["forward" (fn (rest xs) (+ hoz val) aim (+ depth (* aim val)))]
     ["up" (fn (rest xs) hoz (- aim val) depth)]
     ["down" (fn (rest xs) hoz (+ aim val) depth)]))
+
+(define (try-two input two?)
+  (for/fold ([hoz 0] [aim 0] [depth 0]
+             #:result (* hoz depth))
+            ([line input])
+    (let ([dir (car (string-split line " "))]
+          [val (string->number (cadr (string-split line " ")))])
+      (if two? ; I wish I could think of a better way for this
+          (match dir
+            ["forward" (values (+ hoz val) aim (+ depth (* aim val)))]
+            ["up" (values hoz (- aim val) depth)] 
+            ["down" (values hoz (+ aim val) depth)])
+          (match dir
+            ["forward" (values (+ hoz val) aim depth)]
+            ["up" (values hoz aim (- depth val))]
+            ["down" (values hoz aim (+ depth val))])))))
