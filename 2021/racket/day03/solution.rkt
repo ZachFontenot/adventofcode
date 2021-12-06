@@ -62,19 +62,19 @@
 (define (filter-bits lines char pos)
   (filter (λ (x) (char=? char (list-ref x pos))) lines))
 
-(define (grab-char val pivot char)
+(define (grab-char ones zeroes which)
   (cond
-    [(and (char=? char #\1)(<= pivot val)) #\1]
-    [(and (char=? char #\1)(> pivot val)) #\0]
-    [(<= pivot val) #\0]
-    [(> pivot val) #\1]))
+    [(and (char=? which #\1)(<= zeroes ones)) #\1]
+    [(and (char=? which #\1)(> zeroes ones)) #\0]
+    [(<= zeroes ones) #\0]
+    [else #\1]))
 
 (define (find-rating input oxygen-rating?)
   (define (loop input pos)
     (if (= 1 (length input))
         (car input)
-        (let* ([most-common (count-ones (list-ref (apply map list input) pos))]
-               [char (grab-char most-common (- (length input) most-common ) oxygen-rating?)]
+        (let* ([ones (count-ones (list-ref (apply map list input) pos))]
+               [char (grab-char ones (- (length input) ones ) oxygen-rating?)]
                [next (filter-bits input char pos)])
           (loop next (add1 pos)))))
   (loop input 0))

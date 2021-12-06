@@ -1,5 +1,7 @@
 #lang racket
 
+(require algorithms)
+
 (define input (map string->number (file->lines "input.txt")))
 
 ; This is basically a while loop with tail recursion.
@@ -17,11 +19,7 @@
   (loop (cdr lines) (car lines) 0))
 
 (define (process-for-part-two lines)
-  (define (loop l acc-list)
-    (if (>= (length l) 3)
-        (loop (cdr l) (append acc-list (list (apply + (take l 3)))))
-        acc-list))
-  (loop lines '()))
+  (map sum (sliding lines 3))) ; algorithms package has exactly what we need
 
 ; I basically just use racket-mode to test, so no executable output.
 (define solution-one (find-increasing input))
