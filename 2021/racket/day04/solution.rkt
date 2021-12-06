@@ -91,3 +91,31 @@
 (define part-one
   (let ([in (read-input input)])
     (bingo (cadr in) (car in))))
+
+;; part two just needs to not break out with the ans when it first finds it.
+;; so instead we remove cards as they are marked complete
+
+(define (try-bingo-two draw cards)
+  (if (null? cards)
+      cards
+      (let* ([marked (mark-card (car cards) draw)]
+             [chck (check-card marked)]
+             [checked (try-bingo-two draw (cdr cards))])
+        (cond
+          [chck checked]
+          [else (cons marked checked)]))))
+
+(define (bingo-two draws cards)
+  (if (null? draws)
+      0
+      (let ([draw (car draws)])
+        (cond
+          [(and (= 1 (length cards)) (check-card (mark-card (car cards) draw)))
+           (get-sum draw (mark-card (car cards) draw))]
+          [(= 1 (length cards)) (bingo-two (cdr draws) (mark-card cards draw))]
+          [else (let ([marked (try-bingo-two draw cards)])
+                  (bingo-two (cdr draws) marked))]))))
+
+(define (part-two [in input])
+  (let ([readed (read-input in)])
+    (bingo-two (car readed) (cadr readed))))
