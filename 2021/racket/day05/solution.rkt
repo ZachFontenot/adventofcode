@@ -1,6 +1,10 @@
+;; Adapted from Jason Pollentier's (@grossvogel) Elixir solution
+; because mine stunk
+
 #lang racket
 
 (require threading
+         sugar
          megaparsack
          megaparsack/text
          data/monad
@@ -21,6 +25,9 @@
     "5,5 -> 8,2"))
 ;; running into nested map calls, went megaparsack
 
+(struct line (from to) #:transparent)
+(struct point (x y) #:transparent)
+
 (define points/p
   (do [first-x <- integer/p]
       (char/p #\,)
@@ -32,47 +39,44 @@
       [second-x <- integer/p]
       (char/p #\,)
       [second-y <- integer/p]
-      (pure (list (list first-x first-y) (list second-x second-y)))))
+      (pure (line (point first-x first-y) (point second-x second-y)))))
 
 (define (parse-input input)
   (for/list ([line input])
     (parse-result! (parse-string points/p line))))
 
-;; maybe wanna make a hash of points? and inc when we hit it?
-;; GOING IMPERATIVE FOR THIS HASH, FUCK IT
+(define (horizontal? ln)
+  (match ln
+    [(line (point _ y) (point _ y)) #t]
+    [_ #f]))
 
-(define h (make-hash))
+(define (vertical? ln)
+  (match ln
+    [(line (point x _) (point x _)) #t]
+    [_ #f]))
 
-(define (do-points pair)
-  (let ([first-x (first (car pair))]
-        [first-y (second (car pair))]
-        [second-x (first  (cadr pair))]
-        [second-y (second (cadr pair))])
-    (if (or (= first-x second-x)
-            (= first-y second-y))
-        (determine first-x first-y second-x second-y)
-        '())))
+(define (diagonal? ln)
+  (and (not (horizontal? ln)) (not (vertical? ln))))
 
-(define (determine x1 y1 x2 y2)
-  (cond
-    [(and (= x1 x2) (< y1 y2)) (do-hash-ys y1 y2 x1)]
-    [(and (= x1 x2) (< y2 y1)) (do-hash-ys y2 y1 x1)]
-    [(and (= y1 y2) (< x1 x2)) (do-hash-xs x1 x2 y1)]
-    [else (do-hash-xs x2 x1 y1)]))
+(define (x-diff ln)
+  (match ln
+    [(line (point x1 _) (point x2 _)) (- x2 x1)]
+    [_ 0]))
 
-(define (do-hash-xs p1 p2 c)
-  (for ([p (in-inclusive-range p1 p2)])
-    (let ([point (list p c)])
-      (if (hash-has-key? h point)
-          (hash-update! h point add1)
-          (hash-set! h point 1)))))
+(define (y-diff ln)
+  (match ln
+    [(line (point _ y1) (point _ y2)) (- y2 y1)]
+    [_ 0]))
 
-(define (do-hash-ys p1 p2 c)
-  (for ([p (in-inclusive-range p1 p2)])
-    (let ([point (list c p)])
-      (if (hash-has-key? h point)
-          (hash-update! h point add1)
-          (hash-set! h point 1)))))
+(define (points ln)
+  (let* ([x (x-diff ln)]
+         [y (y-diff ln)]
+         [dist (max (abs x) (abs y))]
+         [x-step (/ x dist)]
+         [y-step (/ y dist)])
+    (map (λ (distance) (point (+ (point-x (line-from ln)) (* x-step distance))
+                              (+ (point-y (line-from ln)) (* y-step distance))))
+         (inclusive-range 0 dist))))
 
 (define (count-crossover point-hash)
   (for/sum ([val (hash-values point-hash)])
@@ -80,46 +84,19 @@
         1
         0)))
 
-;; note to self can't run more than once in repl because mutable hash
-; This is marginally slow, but OH WELL
-(define (part-one input)
-  (let ([processed (parse-input input)])
-    (for ([points processed])
-      (do-points points)))
-  (count-crossover h))
+(define (run-solve-one input)
+  (~>> input
+      parse-input
+      (filter (λ (e) (not (diagonal? e))))
+      (map points)
+      flatten
+      frequency-hash
+      count-crossover))  
 
-;; Need to figure this out better.
-
-(define (points-part-two pair)
-  (let ([first-x (first (car pair))]
-        [first-y (second (car pair))]
-        [second-x (first  (cadr pair))]
-        [second-y (second (cadr pair))])
-    (cond
-      [(eq? first-x second-x)
-       (if (< first-y second-y)
-           (do-hash-ys first-y second-y first-x)
-           (do-hash-ys second-y second-x first-x))]
-      [(eq? first-y second-y)
-       (if (< first-x second-x)
-           (do-hash-xs first-x second-x first-y)
-           (do-hash-xs second-x first-x first-y))]
-     [else (do-hash first-x first-y second-x second-y)])))
-
-(define (do-hash x1 y1 x2 y2)
-  (for ([x (if (<= x1 x2)
-                (in-inclusive-range x1 x2)
-                (in-list (reverse (range x2 (add1 x1)))))]
-         [y (if (<= y1 y2)
-                (in-inclusive-range y1 y2)
-                (in-list (reverse (range y2 (add1 y1)))))])
-    (let ([point (list x y)])
-      (if (hash-has-key? h point)
-          (hash-update! h point add1)
-          (hash-set! h point 1)))))
-
-(define (part-two input)
-  (let ([processed (parse-input input)])
-    (for ([points processed])
-      (points-part-two points)))
-  (count-crossover h))
+(define (run-solve-two input)
+  (~>> input
+       parse-input
+       (map points)
+       flatten
+       frequency-hash
+       count-crossover))
