@@ -4,7 +4,8 @@
          racket/hash
          threading)
 
-;; Making lists of the chars
+(struct display-digits (input output) #:transparent)
+
 (define (split-strings lines)
   (for/list ([line lines])
     (map string-split (string-split line " | "))))
@@ -12,6 +13,14 @@
 (define (make-sets lines)
   (for/list ([line lines])
     (map (λ (l) (map string->list l)) line)))
+
+;; Making lists of the chars
+(define (parse-digits lines)
+  (for/list ([line lines])
+    (match-define `(,input ,output) (string-split line "|"))
+    (display-digits
+     (map (compose (λ (s) (apply set s)) string->list) (string-split input))
+     (map (compose (λ (s) (apply set s)) string->list) (string-split output)))))
 
 (define seven-segments
   (~> (open-aoc-input (find-session) 2021 8 #:cache #t)
@@ -25,23 +34,19 @@
       split-strings
       make-sets))
 
-(define (match-unique? output)
-  (let ([l (length output)])
-    (or (equal? l 2)
-        (equal? l 3)
-        (equal? l 4)
-        (equal? l 7))))
-
 (define (count-uniques segments)
-  (for/fold ([unique-counts 0])
-            ([signal segments])
-    (let ([outputs (second signal)])
-      (apply + unique-counts (map (λ (cs) (if (match-unique? cs) 1 0)) outputs)))))
+  (for*/sum ([signal segments] ; for/fold to sum is just for/sum
+             [out (in-list (display-digits-output signal))]
+             #:when (or (= (set-count out) 2)
+                        (= (set-count out) 3)
+                        (= (set-count out) 4)
+                        (= (set-count out) 7)))
+    1))
 
 ;; Now I actually want the letters
 ;; For each line, I want to map the set of letters to their corresponding
-;; segments.
-
+;; segments. This is misguided because I'm doing work that I don't need to be doing
+;; and the properties of the digits is more obvious to me NOW THAT I BLUNDERED THROUGH IT
 (define (uniques-hash inputs)
   (for/hash ([chars inputs])
     (let ([l (length chars)])
@@ -125,3 +130,60 @@
             ([line readings])
     (let ([digit-hash (build-hash (car line))])
       (+ sum-of-displays (build-num (map (λ (cs) (match-digits digit-hash cs)) (second line)))))))
+
+;; Thanks Hazel for this much better solution
+(define ((digit-pattern inputs) seg)
+  (define (with-length len)
+    (for/list ([pattern inputs]
+               #:when (= (set-count pattern) len))
+      pattern))
+
+  ; set rules
+  (define one (first (with-length 2)))
+  (define four (first (with-length 4)))
+  (define seven (first (with-length 3)))
+  (define eight (first (with-length 7)))
+    
+  (define adg (apply set-intersect (with-length 5)))
+  
+  (define three (set-union adg one))
+
+  (define nine (set-union adg four))
+
+  (define agf (apply set-intersect (with-length 6)))
+
+  (define f (set-subtract agf adg))
+
+  (define e (set-subtract eight (set-union agf adg four)))
+
+  (define two (set-union (set-subtract three f) e))
+
+  (define c (set-subtract (set-intersect four seven) f))
+
+  (define six (set-subtract eight c))
+
+  (define five (set-subtract eight c e))
+
+  (define zero (set-union (set-subtract eight adg) agf))
+
+  (cond [(set=? seg zero) #\0]
+        [(set=? seg one) #\1]
+        [(set=? seg two) #\2]
+        [(set=? seg three) #\3]
+        [(set=? seg four) #\4]
+        [(set=? seg five) #\5]
+        [(set=? seg six) #\6]
+        [(set=? seg seven) #\7]
+        [(set=? seg eight) #\8]
+        [(set=? seg nine) #\9]))
+
+;; Not Faster but like 3 ms
+(define segments
+  (~> (open-aoc-input (find-session) 2021 8 #:cache #t)
+      port->lines
+      parse-digits))
+
+(define (part-deux segs)
+  (for/sum ([seg segs])
+    (match-define (display-digits pats outs) seg)
+    (string->number (apply string (map (digit-pattern pats) outs)))))
