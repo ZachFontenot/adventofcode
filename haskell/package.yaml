@@ -1,0 +1,44 @@
+name: haskell-aoc
+version: 0.1.0.0
+license: MIT
+author: "Zach Fontenot"
+maintainer: "fontenot.zachary1@gmail.com"
+
+extra-source-files:
+  - CHANGELOG.md
+
+dependencies:
+  - attoparsec
+  - base >=4.16 && <4.17
+  - bytestring
+  - aeson
+  - containers
+  - deriving-aeson
+  - directory
+  - http-client
+  - lens
+  - mtl
+  - string-interpolate
+  - text
+  - time
+  - validation
+  - vector
+  - utf8-string
+  - wreq
+
+default-extensions: OverloadedStrings
+ghc-options: -Wall
+
+library:
+  source-dirs: helpers
+
+executables:
+  aoc2021:
+    main: Main.hs
+    source-dirs:
+      - "2021"
+      - "2021/days"
+    ghc-options:
+      - -threaded
+    dependencies:
+      - haskell-aoc
