@@ -29,7 +29,7 @@ import Day23 ( solveDay )
 import Day24 ( solveDay )
 import Day25 ( solveDay )
 
-import SolveDay ( Day, LogLevel(Quiet) )
+import SolveDay ( Day, LogLevel(Quiet, Debug) )
 
 {- ORMOLU_ENABLE -}
 
