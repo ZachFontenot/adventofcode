@@ -1,17 +1,11 @@
 # Advent of Code #
-So far this is just 2021 and just in Racket. 
-Trying to get better at Lispin'
 
-I'm thinking of maybe going back and doing some days in Erlang.
-Seems fun.
+Welcome
 
-REALIZING THAT MY ORGANIZATION IS BAD AND I NEED TO CHANGE IT.
+Toplevel folders are for languages, inside each language dir they are divided by year to some extent.
+I didn't want to define separate projects for each year basically.
 
-Going to move language folders to the top level, so I can define a single project
-per lang and have the years nested inside or something.
-```erlang
--module(hello).
+Haskell code is based on Sam Coy's [template](https://github.com/samcoy3/advent-of-code-template). Also shamefully, those solutions are his trying to get the feel for the template and parser library used.
 
-hello(Msg) ->
-  io:fwrite("Funky syntax and all!\n~s\n", [Msg]).
-```
+## TODO ##
+Add a top-level nix-shell, so all the languages are available in each directory and I don't have to duplicate `shell.nix` && `nix/*`
