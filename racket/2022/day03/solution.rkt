@@ -33,4 +33,3 @@
          (apply set-intersect _)
          car
          (hash-ref priority))))
-     
