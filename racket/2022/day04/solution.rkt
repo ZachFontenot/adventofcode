@@ -12,10 +12,8 @@
 
 (define (range-overlaps-all? f-elf-f f-elf-s s-elf-f s-elf-s)
   (cond
-    [(or (and (<= f-elf-f s-elf-f)
-              (>= f-elf-s s-elf-s))
-         (and (<= s-elf-f f-elf-f)
-              (>= s-elf-s f-elf-s))) 1]
+    [(or (<= f-elf-f s-elf-f s-elf-s f-elf-s)
+         (<= s-elf-f f-elf-f f-elf-s s-elf-s)) 1]
     [#t 0]))
 
 (define (range-overlaps-any? f-elf-f f-elf-s s-elf-f s-elf-s)
