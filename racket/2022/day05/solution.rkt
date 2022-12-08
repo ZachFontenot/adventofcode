@@ -18,8 +18,6 @@ move 3 from 1 to 3
 move 2 from 2 to 1
 move 1 from 1 to 2")
 
-;; Letter every four indices
-;; 1..5..9...
 (define input
   (~>
    (fetch-aoc-input (find-session) 2022 5 #:cache #t)
@@ -40,7 +38,6 @@ move 1 from 1 to 2")
   (for/hash ([key (inclusive-range 1 (length stacks))])
     (values key (list-ref stacks (- key 1)))))
 
-;; Index - 1 REMEMBER
 (define stacks
   (~>> (car input)
       (string-split _ "\n")
@@ -49,7 +46,6 @@ move 1 from 1 to 2")
       (get-stacks fuck-it)
       (map (λ~>>
             (filter (λ (char) (not (equal? #\space char))))))
-      ;; drop last item, just in case
       (map (λ (ls) (reverse (cdr (reverse ls)))))
       make-stack-hash))
 
