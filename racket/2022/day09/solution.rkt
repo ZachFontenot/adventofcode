@@ -37,6 +37,9 @@ R 2
   (pt (+ (pt-x point) (pt-x to-add))
       (+ (pt-y point) (pt-y to-add))))
 
+(define (div-pt point to-div)
+   (pt (quotient (pt-x point) to-div)
+       (quotient (pt-y point) to-div)))
 
 (define (move-head h dir)
   (match dir
@@ -46,19 +49,17 @@ R 2
     ["D" (add-pt h (pt 0 -1))]))
 
 (define (to-update-tail h t)
-  (match (pt-diff h t)
-    [(pt 0 -2) (pt 0 -1)]
-    [(pt 0 2) (pt 0 1)]
-    [(pt -2 0) (pt -1 0)]
-    [(pt 2 0) (pt 1 0)]
-    [(pt a b) #:when (and (< 2 (abs-diff h t))
-                          (< a 0) (< b 0)) (pt -1 -1)]
-    [(pt a b) #:when (and (< 2 (abs-diff h t))
-                          (< a 0)) (pt -1 1)]
-    [(pt a b) #:when (and (< 2 (abs-diff h t))
-                          (< b 0)) (pt 1 -1)]
-    [(pt a b) #:when (< 2 (abs-diff h t)) (pt 1 1)]
-    [_ (pt 0 0)]))
+  (define diff-pt (pt-diff h t))
+  (match-define (pt a b) diff-pt)
+  (case (abs-diff h t)
+    [(0 1) (pt 0 0)]
+    [(2) (div-pt diff-pt 2)]
+    [(3 4)
+     (cond
+       [(and (negative? a) (negative? b)) (pt -1 -1)]
+       [(negative? a) (pt -1 1)]
+       [(negative? b) (pt 1 -1)]
+       [else (pt 1 1)])]))
 
 (define (move-tail h t)
   (add-pt t (to-update-tail h t)))
@@ -71,30 +72,21 @@ R 2
     (let ([new-tail (move-tail head rope)])
       (values (cons new-tail new-ropes) new-tail))))
 
-(define (run-a)
-  (for/fold ([seen (set (pt 0 0))]
+(define (run)
+  (for/fold ([seen (list (set (pt 0 0)) (set (pt 0 0)))]
              [h (pt 0 0)]
              [t (pt 0 0)]
-             #:result (set-count seen))
+             [tails (make-list 9 (pt 0 0))]
+             #:result (cons (set-count (first seen)) (set-count (second seen))))
             ([move movements]
              #:do
              [(match-define (list dir amt) move)] [_ (in-range amt)])
-    (define updated-head (move-head h dir))
-    (define updated-tail (move-tail updated-head t))
+    (define new-head (move-head h dir))
+    (define new-tail (move-tail new-head t))
+    (define updated-tails (move-tails new-head tails))
+    (values (list
+             (set-add (first seen) new-tail)
+             (set-add (second seen) (last tails)))
+            new-head new-tail updated-tails)))
 
-    (values (set-add seen updated-tail) updated-head updated-tail)))
-
-(define (run-b)
-  (for/fold ([seen (set (pt 0 0))]
-              [h (pt 0 0)]
-              [tails (make-list 9 (pt 0 0))]
-              #:result (set-count seen))
-             ([move movements]
-              #:do
-              [(match-define (list dir amt) move)] [_ (in-range amt)])
-    (define updated-head (move-head h dir))
-    (define updated-tails (move-tails updated-head tails))
-    (values (set-add seen (last tails)) updated-head updated-tails)))
-
-(time (run-a))
-(time (run-b))
+(define (do-time) (time (run)))
