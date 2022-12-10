@@ -18,56 +18,47 @@
    (map string-split)
    (map second-number)))
 
-(define (run)
-  (define cycles (set 20 60 100 140 180 220))
-  (define off-cycles (set-map cycles sub1))
-
-  (for/fold ([sum 0]
-             [cycle-count 1]
+(define (x-values)
+  (for/fold ([xs (list)]
              [x-register 1]
-             [message (list)]
-             #:result (values sum (list->string (reverse message))))
+             #:result (list->vector (reverse xs)))
             ([cmd cpu-instructions])
 
     (match cmd
-      ['noop #:when (set-member? cycles cycle-count)
-             (values (+ sum (* x-register cycle-count))
-                     (add1 cycle-count) x-register
-                     (draw-pixel 1 cycle-count x-register message))]
-      ['noop (values sum (add1 cycle-count) x-register
-                     (draw-pixel 1 cycle-count x-register message))]
-      
-      [num #:when (set-member? cycles cycle-count)
-           (values (+ sum (* x-register cycle-count))
-                   (+ cycle-count 2) (+ x-register num)
-                    (draw-pixel 2 cycle-count x-register message))]
-      [num #:when (set-member? off-cycles cycle-count)
-           (values (+ sum (* x-register (add1 cycle-count)))
-                   (+ cycle-count 2) (+ x-register num)
-                    (draw-pixel 2 cycle-count x-register message))]
-      [num (values sum (+ cycle-count 2) (+ x-register num)
-                    (draw-pixel 2 cycle-count x-register message))])))
+      ['noop (values (cons x-register xs) x-register)]
+      [num (values (append (list x-register x-register) xs)
+                   (+ x-register num))])))
 
-;; N is for number of cycles
-(define (draw-pixel n c x-reg msg)
-  (if (= n 1)
-      (do-draw c x-reg msg)
-      (let ([first-draw (do-draw c x-reg msg)])
-        (do-draw (add1 c) x-reg first-draw))))
-        
-(define (do-draw c x-reg msg)
-  (define c-mod (sub1 (modulo c 40)))
-  (cond
-    [(= c-mod -1)
-     (case (abs (- x-reg 39))
-       [(0 1) (append '(#\# #\newline) msg)]
-       [else (append '(#\. #\newline) msg)])]
-    [else
-     (case (abs (- x-reg c-mod))
-       [(0 1) (cons #\# msg)]
-       [else (cons #\. msg)])]))
+(define (draw-pixel c x-reg)
+  (case (abs (- x-reg c))
+    [(0 1) #\█]
+    [else #\space]))
 
-(define-values (a b) (run))
-;;; X is the middle of the sprite
-;;; so X = (sub1 X add1)
-;;; so if cycle = any X, draw that X otherwise .
+(define (get-part1 xs)
+  (for/fold ([sum 0])
+            ([cycle (in-range 19 (vector-length xs) 40)])
+    (+ sum (* (vector-ref xs cycle) (add1 cycle)))))
+
+(define (get-part2 xs)
+  (for/fold ([msg (list)]
+             #:result (list->string (reverse msg)))
+            ([c (in-range (vector-length xs))])
+
+    (define cycle (modulo c 40))
+    (if (not (zero? cycle))
+        (cons (draw-pixel cycle (vector-ref xs c)) msg)
+        (append (list (draw-pixel cycle (vector-ref xs c)) #\newline) msg))))
+
+(define (run-solutions)
+  (define xs (time (x-values)))
+  (time (get-part1 xs))
+  (define part2 (time (get-part2 xs)))
+  (display part2))
+
+; Behold
+; ███   ██   ██  ████ █  █ █    █  █ ████ 
+; █  █ █  █ █  █ █    █ █  █    █  █ █    
+; ███  █  █ █    ███  ██   █    ████ ███  
+; █  █ ████ █    █    █ █  █    █  █ █    
+; █  █ █  █ █  █ █    █ █  █    █  █ █    
+; ███  █  █  ██  ████ █  █ ████ █  █ █    
