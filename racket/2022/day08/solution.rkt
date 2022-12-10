@@ -68,3 +68,6 @@
 
 (define-values (solution-a solution-b)
   (look-at-trees trees))
+
+(define (do-time)
+  (time (look-at-trees trees)))

@@ -7,8 +7,6 @@
          megaparsack/text
          threading)
 
-(define start (current-inexact-monotonic-milliseconds))
-
 (define command/p
   (do (string/p "$")
       space/p
@@ -61,14 +59,19 @@
          [previously-seen? (values folders current-path previously-seen?)]
          [else (values (update-size folders current-path filesize) current-path previously-seen?)])])))
 
-(define filesystem (handle-build-structure commands))
+(define (solution-a fs)
+  (for/sum ([(_ size) (in-hash fs)] #:when (< size 100001)) size))
 
-(define solution-a (for/sum ([(_ size) (in-hash filesystem)] #:when (< size 100001)) size))
-(define solution-b
-  (let ([size-to-clear (- 30000000 (- 70000000 (hash-ref filesystem '("/"))))])
+(define (solution-b fs)
+  (let ([size-to-clear (- 30000000 (- 70000000 (hash-ref fs '("/"))))])
     (for/fold ([dir 70000000])
-              ([(_ size) (in-hash filesystem)]
+              ([(_ size) (in-hash fs)]
                #:when (< size-to-clear size))
       (min dir size))))
 
-(define end (- (current-inexact-monotonic-milliseconds) start))
+(define (run-parts)
+  (define filesystem (handle-build-structure commands))
+  (cons (solution-a filesystem) (solution-b filesystem)))
+
+(define (do-time)
+  (time (run-parts)))

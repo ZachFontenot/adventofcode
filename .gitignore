@@ -26,6 +26,7 @@ cabal.project.local~
 
 # Advent of Code things
 
+inputs/*
 */inputs/*
 aoc_cookie
 

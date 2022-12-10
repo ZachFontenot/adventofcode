@@ -69,8 +69,8 @@ R 2
              [head h]
              #:result (reverse new-ropes))
             ([rope ropes])
-    (let ([new-tail (move-tail head rope)])
-      (values (cons new-tail new-ropes) new-tail))))
+    (define new-tail (move-tail head rope))
+    (values (cons new-tail new-ropes) new-tail)))
 
 (define (run)
   (for/fold ([seen (list (set (pt 0 0)) (set (pt 0 0)))]
