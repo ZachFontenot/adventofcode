@@ -153,6 +153,7 @@
     (m-round monkeys counts
              (λ~>
               (modulo
-               (apply lcm
-                      (hash-map monkeys
-                                (λ (k v) (monkey-test v)))))))))
+               (apply
+                lcm
+                (hash-map monkeys
+                          (λ (k v) (monkey-test v)))))))))
