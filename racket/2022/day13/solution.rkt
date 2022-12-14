@@ -46,9 +46,12 @@
     [((list* _) '()) #f]
     [((list* a rst1) (list* a rst2)) (compare-pair rst1 rst2)]
     [((list* (? integer? p1) _) (list* (? integer? p2) _)) (< p1 p2)]
-    [((list* (? list? rst1) _) (list* (? list? rst2) _)) (compare-pair rst1 rst2)]
-    [((list* (? list?) _) (list* (? integer? p2) rst2)) (compare-pair pair1 (cons (list p2) rst2))]
-    [((list* (? integer? p1) rst1) (list* (? list?) _)) (compare-pair (cons (list p1) rst1) pair2)]))
+    [((list* (? list? rst1) _) (list* (? list? rst2) _))
+     (compare-pair rst1 rst2)]
+    [((list* (? list?) _) (list* (? integer? p2) rst2))
+     (compare-pair pair1 (cons (list p2) rst2))]
+    [((list* (? integer? p1) rst1) (list* (? list?) _))
+     (compare-pair (cons (list p1) rst1) pair2)]))
 
 (define (check-order ps)
   (for/sum  ([pair (in-slice 2 ps)]
@@ -61,12 +64,12 @@
       (check-order)))
 
 (define (part-b)
-  (define sorted
-    (~> packets
-        (append (list (list (list 2))))
-        (append (list (list (list 6))))
-        (sort compare-pair)))
-  (* (add1 (index-of sorted '((2)))) (add1 (index-of sorted '((6))))))
+  (~> packets
+      (append (list '((2)) '((6))))
+      (sort compare-pair)
+      (indexes-where (λ (ls) (member ls (list '((2)) '((6))))))
+      (map add1 _)
+      (apply * _)))
 
 ; 5198
 ; 22344
