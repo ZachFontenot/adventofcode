@@ -1,6 +1,7 @@
 let
   sources = import ./nix/sources.nix;
   pkgs = import sources.nixpkgs {};
+  ipkgs = import sources.nixpkgs { system = "x86_64-darwin"; };
   ghc_version = "ghc92";
 in
 pkgs.mkShell {
@@ -9,9 +10,6 @@ pkgs.mkShell {
     elixir_1_14
     erlangR25
     rebar3
-
-    # Forth
-    pforth
   
     # Haskell things
     hpack
@@ -26,8 +24,10 @@ pkgs.mkShell {
     haskell.packages.${ghc_version}.haskell-language-server
 
     #Racket is already installed :(
+    #Clojure
+    clojure
 
     ### MISC
     zlib
-  ];
+  ]; ##++ (with ipkgs; [ gforth agda]);
 }

@@ -17,7 +17,9 @@ dependencies:
   - directory
   - http-client
   - lens
+  - megaparsec
   - mtl
+  - replace-attoparsec
   - string-interpolate
   - text
   - time
@@ -38,6 +40,16 @@ executables:
     source-dirs:
       - "2021"
       - "2021/days"
+    ghc-options:
+      - -threaded
+    dependencies:
+      - haskell-aoc
+
+  aoc2023:
+    main: Main.hs
+    source-dirs:
+      - "2023"
+      - "2023/days"
     ghc-options:
       - -threaded
     dependencies:
