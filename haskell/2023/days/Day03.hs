@@ -90,7 +90,7 @@ isntFound :: Foldable t => t EnginePart -> Point -> Bool
 isntFound engineParts point =
   all ((point `notElem`) . getEnginePoints) engineParts
   where
-    getEnginePoints (EnginePart pnum pts _) = pts
+    getEnginePoints (EnginePart _ pts _) = pts
 
 getNumber :: Point -> Point -> Vector (Vector Char) -> EnginePart
 getNumber size (x, y) input =
