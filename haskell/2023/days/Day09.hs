@@ -2,16 +2,12 @@
 
 module Day09 (solveDay) where
 
-{- ORMOLU_DISABLE -}
-import qualified SolveDay as S (solveDay, Day)
-import Data.Attoparsec.Text
 import Control.Applicative ((<|>))
-import qualified Data.Attoparsec.Text as P
+import Data.Attoparsec.Text
 import Data.List (foldl', foldl1')
-import Prelude hiding (takeWhile)
 import Data.Text (Text)
-import Data.Void
-{- ORMOLU_ENABLE -}
+import qualified SolveDay as S (Day, solveDay)
+import Prelude hiding (takeWhile)
 
 solveDay :: S.Day
 solveDay = S.solveDay inputParser partA partB
@@ -43,7 +39,11 @@ type OutputB = Int
 
 ------------ PART A ------------
 getDiffs :: [Int] -> [Int]
-getDiffs = tail . reverse . fst . foldl' (\(diffs, prev) num -> (num - prev : diffs, num)) ([], 0)
+getDiffs =
+  tail
+    . reverse
+    . fst
+    . foldl' (\(diffs, prev) num -> (num - prev : diffs, num)) ([], 0)
 
 getAllDiffs :: [Int] -> [[Int]]
 getAllDiffs nums =
@@ -65,8 +65,14 @@ projectHead toProject nextDiffs =
   head nextDiffs - head toProject : nextDiffs
 
 partA :: Input -> OutputA
-partA input = sum $ map (last . foldl1' project . getAllDiffs) $ filter (not . null) input
+partA input =
+  sum $
+    map (last . foldl1' project . getAllDiffs) $
+      filter (not . null) input
 
 ------------ PART B ------------
 partB :: Input -> OutputB
-partB input = sum $ map (head . foldl1' projectHead . getAllDiffs) $ filter (not . null) input
+partB input =
+  sum $
+    map (head . foldl1' projectHead . getAllDiffs) $
+      filter (not . null) input
