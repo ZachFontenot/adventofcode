@@ -26,10 +26,14 @@ cabal.project.local~
 
 # Advent of Code things
 
-inputs/*
-*/inputs/*
+**/inputs
 aoc_cookie
 
 # Elixir things
 
 */.elixir_ls
+
+# Scala things
+**/.bloop
+**/.metals
+**/target

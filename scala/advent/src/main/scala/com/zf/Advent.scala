@@ -15,7 +15,7 @@ object Advent {
         IO(Option(reader.readLine())).flatMap {
           case Some(line) => readLines(acc :+ line)
           case None       => IO.pure(acc)
-        }
+        }      
       readLines(Nil)
     }
 
@@ -23,6 +23,7 @@ object Advent {
     val mod = day match {
       case 1 => One
       case 2 => Two
+      case 3 => Three
       case _ => One
     }
     loadFile(s"./inputs/day${day}.txt").flatMap { fileInput =>
