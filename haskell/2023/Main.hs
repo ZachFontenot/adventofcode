@@ -76,5 +76,5 @@ main = do
     Nothing -> putStrLn "Invalid day provided. 1 - 25"
     Just dayFunc -> do
       putStrLn "********STARTING********"
-      _ <- dayFunc Quiet "2023" (show day)
+      _ <- dayFunc Debug "2023" (show day)
       putStrLn "**********DONE**********"

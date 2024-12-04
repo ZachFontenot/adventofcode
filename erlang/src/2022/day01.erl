@@ -19,10 +19,9 @@ parse_elves() ->
     
 solutionA() ->
     Elves = parse_elves(),
-    %O(n) for the foldl
     io:format("~p~n", [lists:foldl(fun (Acc, Head) -> max(Acc, Head) end, 0, Elves)]).
+
 solutionB() ->
     Elves = parse_elves(),
-    %O(nlogn) for this computation
     Top_elves = lists:sublist(lists:sort(fun (A, B) -> A > B end, Elves), 1, 3),
     io:format("~p~n", [lists:sum(Top_elves)]).

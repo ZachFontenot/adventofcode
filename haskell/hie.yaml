@@ -1,0 +1,166 @@
+cradle:
+  cabal:
+    - path: "2023/Main.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day01.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day02.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day03.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day04.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day05.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day06.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day07.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day08.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day09.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day10.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day11.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day12.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day13.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day14.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day15.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day16.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day17.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day18.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day19.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day20.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day21.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day22.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day23.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day24.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2023/days/Day25.hs"
+      component: "haskell-aoc:exe:aoc2023"
+
+    - path: "2021/Main.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day01.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day02.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day03.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day04.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day05.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day06.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day07.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day08.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day09.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day10.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day11.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day12.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day13.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day14.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day15.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day16.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day17.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day18.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day19.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day20.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day21.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day22.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day23.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day24.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "2021/days/Day25.hs"
+      component: "haskell-aoc:exe:aoc2021"
+
+    - path: "helpers/Cookie.hs"
+      component: "lib:haskell-aoc"
+
+    - path: "helpers/GenDays.hs"
+      component: "lib:haskell-aoc"
+
+    - path: "helpers/SolveDay.hs"
+      component: "lib:haskell-aoc"

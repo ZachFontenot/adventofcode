@@ -10,22 +10,24 @@
 (define command/p
   (do (string/p "$")
       space/p
-      (or/p (do (string/p "cd")
-                space/p
-                [dir <- (many/p any-char/p)]
-                (pure (list "cd" (list->string dir))))
-            (do (string/p "ls")
-                (pure "ls")))))
+      (or/p
+       (do (string/p "cd")
+           space/p
+           [dir <- (many/p any-char/p)]
+           (pure (list "cd" (list->string dir))))
+       (do (string/p "ls")
+           (pure "ls")))))
 
 (define term/p
-  (or/p (do [size <- integer/p]
-            space/p
-            [filename <- (many/p any-char/p)]
-            (pure (list size (list->string filename))))
-        (do (string/p "dir")
-            space/p
-            [dirname <- (many/p letter/p)]
-            (pure (list "dir" (list->string dirname))))))
+  (or/p
+   (do [size <- integer/p]
+       space/p
+       [filename <- (many/p any-char/p)]
+       (pure (list size (list->string filename))))
+   (do (string/p "dir")
+       space/p
+       [dirname <- (many/p letter/p)]
+       (pure (list "dir" (list->string dirname))))))
 
 (define tree/p
   (or/p command/p

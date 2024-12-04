@@ -91,7 +91,7 @@
       (map points)
       flatten
       frequency-hash
-      count-crossover))  
+      count-crossover))
 
 (define (run-solve-two input)
   (~>> input

@@ -17,6 +17,7 @@ library
   exposed-modules:
       Cookie
       GenDays
+      ParserUtils
       SolveDay
   other-modules:
       Paths_haskell_aoc
