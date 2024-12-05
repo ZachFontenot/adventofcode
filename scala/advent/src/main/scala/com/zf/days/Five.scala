@@ -8,7 +8,7 @@ import com.zf.ParseHelpers.intParser
 case class Update(ups: List[Int])
 case class PrintOrder(before: Int, after: Int)
 case class ManPage(
-    rawRules: List[PrintOrder],
+    after: Map[Int, List[Int]],
     updates: List[Update]
 )
 
@@ -59,35 +59,46 @@ object Five extends DayType[ManPage, Int] {
       }
     val orders = mapEithers(split.getOrElse("|", List.empty).map(oP.parseAll))
     val updates = mapEithers(split.getOrElse(",", List.empty).map(uP.parseAll))
-    ManPage(orders, updates)
+    orders.foldLeft(ManPage(Map.empty, updates)) {
+      case (ManPage(a, us), PrintOrder(before, after)) =>
+        val newA = a.updatedWith(before): v =>
+          v match {
+            case Some(lst) => Some(after :: lst)
+            case None      => Some(List(after))
+          }
+        ManPage(newA, us)
+    }
+
+  def sortPrinter(
+      afters: Map[Int, List[Int]],
+      update: List[Int]
+  ) =
+    update.sortWith { case (a, b) =>
+      afters.getOrElse(a, List.empty).contains(b)
+    }
 
   def getMiddle[A](ls: List[A]): A =
     ls(ls.size / 2)
 
-  def sortByRules(rules: List[PrintOrder], a: Int, b: Int) =
-    rules.exists { case PrintOrder(before, after) =>
-      a == before &&
-      b == after
-    }
-  def validOrder(update: List[Int], f: (a: Int, b: Int) => Boolean) =
-    update.sortWith(f) == update
+  def validOrder(update: List[Int], f: List[Int] => List[Int]) =
+    f(update) == update
 
   def partA(input: ManPage): Int =
-    val ManPage(rules, updates) = input
-    val sortupdate = (a, b) => sortByRules(rules, a, b)
+    val ManPage(afters, updates) = input
+    val f = (a: List[Int]) => sortPrinter(afters, a)
     updates.foldLeft(0) { case (acc, Update(update)) =>
-      if validOrder(update, sortupdate)
+      if validOrder(update, f)
       then acc + getMiddle(update)
       else acc
     }
 
   def partB(input: ManPage): Int =
-    val ManPage(rules, updates) = input
-    val f = (a, b) => sortByRules(rules, a, b)
+    val ManPage(afters, updates) = input
+    val f = (a: List[Int]) => sortPrinter(afters, a)
     val incorrect = updates.filter { case Update(update) =>
       !validOrder(update, f)
     }
     incorrect.foldLeft(0) { case (acc, Update(update)) =>
-      acc + getMiddle(update.sortWith(f))
+      acc + getMiddle(f(update))
     }
 }
