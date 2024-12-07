@@ -3,6 +3,7 @@ package com.zf
 import cats.effect.IOApp
 import cats.effect.IO
 import cats.effect.ExitCode
+import cats.syntax.traverse.toTraverseOps
 
 object Main extends IOApp {
 
@@ -12,6 +13,6 @@ object Main extends IOApp {
       case Some(day) =>
         Advent.runDay(day.toInt).flatMap(IO.println).as(ExitCode.Success)
       case None =>
-        IO(System.err.println("Usage: Advent day")).as(ExitCode(2))
+        Advent.runAll().traverse(_.flatMap(IO.println)).as(ExitCode.Success)
     }
 }

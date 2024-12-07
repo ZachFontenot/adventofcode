@@ -2,7 +2,6 @@ package com.zf
 
 import java.io._
 import cats.effect._
-import scala.jdk.CollectionConverters._
 import com.zf.days._
 
 object Advent {
@@ -15,9 +14,16 @@ object Advent {
         IO(Option(reader.readLine())).flatMap {
           case Some(line) => readLines(acc :+ line)
           case None       => IO.pure(acc)
-        }      
+        }
       readLines(Nil)
     }
+
+  val implemented = 7
+
+  def runAll(): List[IO[String]] =
+    for {
+      day <- Range.inclusive(1, implemented).toList
+    } yield runDay(day)
 
   def runDay(day: Int): IO[String] =
     val mod = day match {
@@ -26,12 +32,19 @@ object Advent {
       case 3 => Three
       case 4 => Four
       case 5 => Five
+      case 6 => Six
+      case 7 => Seven
       case _ => One
     }
-    loadFile(s"./inputs/day${day}.txt").flatMap { fileInput =>
-      val input = mod.parseInput(fileInput)
-      val partA = mod.partA(input)
-      val partB = mod.partB(input)
-      IO.pure(s"Part A: ${partA}\nPart B: ${partB}")
-    }
+
+    for {
+      (fileTime, fileInput) <- loadFile(s"./inputs/day${day}.txt").timed
+      (timeP, input) <- IO.pure(mod.parseInput(fileInput)).timed
+      (timeA, resultA) <- IO.pure(mod.partA(input)).timed
+      (timeB, resultB) <- IO.pure(mod.partB(input)).timed
+    } yield s"""
+Runing Day $day\n
+File Reading: ${fileTime.toMillis} ms; Parsing: ${timeP}\n
+Part A: ${resultA}; completed in ${timeA}\n
+Part B: ${resultB}; completed in ${timeB}"""
 }
