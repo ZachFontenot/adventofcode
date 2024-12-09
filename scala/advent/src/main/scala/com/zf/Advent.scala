@@ -18,7 +18,7 @@ object Advent {
       readLines(Nil)
     }
 
-  val implemented = 7
+  val implemented = 8
 
   def runAll(): List[IO[String]] =
     for {
@@ -34,6 +34,7 @@ object Advent {
       case 5 => Five
       case 6 => Six
       case 7 => Seven
+      case 8 => Eight
       case _ => One
     }
 
